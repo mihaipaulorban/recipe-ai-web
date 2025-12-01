@@ -1,14 +1,60 @@
 <section class="space-y-6">
-  <h1 class="text-3xl md:text-4xl font-bold tracking-tight">Cook smarter, not harder 🧠🍳</h1>
+  <h1 class="text-3xl md:text-4xl font-bold tracking-tight">{{ pageTitle }}</h1>
 
   <p class="text-slate-300 max-w-xl">
     Scrivi cosa hai in frigo e lascia che l’AI ti suggerisca ricette personalizzate. Questa è la
     versione web di <span class="font-semibold">Amamii</span>.
   </p>
 
+  <div class="mt-6">
+    <label class="block text-sm font-medium text-slate-300 mb-2"> Inserisci un ingrediente: </label>
+    <input
+      type="text"
+      class="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100 focus:outline-none focus:ring focus:ring-emerald-400"
+      [(ngModel)]="userIngredient"
+      (keyup.enter)="addIngredient()"
+      placeholder="Es. pomodori, basilico, mozzarella..."
+    />
+
+    <p class="mt-2 text-sm text-slate-400">
+      Hai scritto: <span class="font-semibold text-emerald-300">{{ userIngredient }}</span>
+    </p>
+  </div>
   <button
-    class="mt-2 inline-flex items-center gap-2 rounded-lg bg-emerald-500 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-emerald-400 transition"
+    class="mt-3 rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-emerald-400 transition"
+    (click)="addIngredient()"
   >
-    Inizia a generare ricette
+    Aggiungi Ingrediente
   </button>
+
+  <button
+    class="mt-3 ml-2 rounded-lg border border-red-500/80 px-3 py-2 text-sm font-semibold text-red-300 hover:bg-red-500/10 transition"
+    (click)="toggleDeleteMode()"
+  >
+    {{ deleteMode ? 'Fine eliminazione' : 'Elimina ingredienti' }}
+  </button>
+
+  <ul class="mt-4 space-y-1">
+    <li
+      *ngFor="let ing of ingredients; let i = index"
+      class="flex items-center justify-between text-slate-300"
+      [class.shake]="deleteMode"
+    >
+      <span>• {{ ing }}</span>
+
+      <button
+        *ngIf="deleteMode"
+        class="ml-2 rounded-full bg-red-500/20 px-2 py-1 text-xs text-red-300 hover:bg-red-500/40 transition"
+        (click)="removeIngredient(i)"
+      >
+        ✕
+      </button>
+    </li>
+  </ul>
+  <div class="mt-6 rounded-lg border border-slate-700 bg-slate-900/60 p-4">
+    <h2 class="text-sm font-semibold text-slate-200 mb-2">Anteprima richiesta per l’AI</h2>
+    <p class="text-sm text-slate-300">
+      {{ promptPreview }}
+    </p>
+  </div>
 </section>
