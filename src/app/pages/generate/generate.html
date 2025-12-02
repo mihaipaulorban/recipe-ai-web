@@ -1,0 +1,19 @@
+<h1 class="text-3xl font-bold text-slate-100">Generatore di ricette</h1>
+
+<p class="mt-2 text-slate-300">Qui appariranno le ricette generate (fake o AI).</p>
+
+<div class="mt-6">
+  <h2 class="text-lg font-semibold text-slate-200">Ingredienti selezionati</h2>
+
+  <ul class="mt-2 space-y-1 text-slate-300">
+    <li *ngFor="let ing of ingredients">• {{ ing }}</li>
+  </ul>
+</div>
+
+<div class="mt-6">
+  <h2 class="text-lg font-semibold text-slate-200">Ricette suggerite</h2>
+
+  <ul class="mt-2 space-y-2 text-slate-300">
+    <li *ngFor="let result of fakeResults">• {{ result }}</li>
+  </ul>
+</div>

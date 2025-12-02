@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
 import { NgFor, NgIf } from '@angular/common';
-
+import { RecipeService } from '../../services/recipe.service';
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, NgFor, NgIf],
+  imports: [FormsModule, NgFor, NgIf, RouterLink],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -13,6 +14,9 @@ export class HomeComponent {
   userIngredient = '';
   ingredients: string[] = [];
   deleteMode = false;
+  fakeResults: string[] = [];
+
+  constructor(private recipeService: RecipeService) {}
 
   addIngredient() {
     //Se la stringa è vuota o contiene solo spazi bianchi, non fare nulla
@@ -38,5 +42,14 @@ export class HomeComponent {
     }
     const list = this.ingredients.join(', ');
     return `Ho questi ingredienti: ${list}. Suggerisci 3 ricette semplici, gustose e facili da preparare.`;
+  }
+
+  generateRecipes() {
+    this.fakeResults = this.recipeService.generateFakeRecipes(this.ingredients);
+    this.recipeService.setFakeResults(this.fakeResults);
+  }
+
+  goToGenerate() {
+    this.recipeService.setIngredients(this.ingredients);
   }
 }

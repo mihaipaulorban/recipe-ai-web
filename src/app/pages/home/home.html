@@ -57,4 +57,23 @@
       {{ promptPreview }}
     </p>
   </div>
+
+  <button
+    class="mt-4 rounded-lg bg-emerald-500 px-4 py-2 font-semibold text-slate-900 hover:bg-emerald-400 transition"
+    (click)="generateRecipes()"
+  >
+    Genera ricette (fake)
+  </button>
+
+  <div class="mt-4 space-y-2">
+    <p *ngFor="let r of fakeResults" class="text-slate-200">• {{ r }}</p>
+  </div>
+
+  <a
+    routerLink="/generate"
+    (click)="goToGenerate()"
+    class="mt-4 inline-block rounded-lg bg-blue-500 px-4 py-2 font-semibold text-slate-900 hover:bg-blue-400 transition"
+  >
+    Vai al generatore completo →
+  </a>
 </section>
