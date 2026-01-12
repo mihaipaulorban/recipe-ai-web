@@ -1,79 +1,153 @@
 <section class="space-y-6">
-  <h1 class="text-3xl md:text-4xl font-bold tracking-tight">{{ pageTitle }}</h1>
-
-  <p class="text-slate-300 max-w-xl">
-    Scrivi cosa hai in frigo e lascia che l’AI ti suggerisca ricette personalizzate. Questa è la
-    versione web di <span class="font-semibold">Amamii</span>.
-  </p>
-
-  <div class="mt-6">
-    <label class="block text-sm font-medium text-slate-300 mb-2"> Inserisci un ingrediente: </label>
-    <input
-      type="text"
-      class="w-full rounded-lg bg-slate-800 border border-slate-700 px-3 py-2 text-slate-100 focus:outline-none focus:ring focus:ring-emerald-400"
-      [(ngModel)]="userIngredient"
-      (keyup.enter)="addIngredient()"
-      placeholder="Es. pomodori, basilico, mozzarella..."
-    />
-
-    <p class="mt-2 text-sm text-slate-400">
-      Hai scritto: <span class="font-semibold text-emerald-300">{{ userIngredient }}</span>
+  <div class="flex flex-col gap-2">
+    <p class="text-sm uppercase tracking-[0.2em] text-amber-500">Benvenuto in cucina</p>
+    <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-amber-950">{{ pageTitle }}</h1>
+    <p class="text-amber-800 max-w-2xl leading-relaxed">
+      Crea ricette casalinghe con un pizzico di magia. Scrivi cosa hai in dispensa e lasciati guidare
+      da suggerimenti caldi e moderni: come il quaderno di ricette della nonna, ma con l’AI accanto.
     </p>
   </div>
-  <button
-    class="mt-3 rounded-lg bg-emerald-500 px-3 py-2 text-sm font-semibold text-slate-900 hover:bg-emerald-400 transition"
-    (click)="addIngredient()"
-  >
-    Aggiungi Ingrediente
-  </button>
 
-  <button
-    class="mt-3 ml-2 rounded-lg border border-red-500/80 px-3 py-2 text-sm font-semibold text-red-300 hover:bg-red-500/10 transition"
-    (click)="toggleDeleteMode()"
-  >
-    {{ deleteMode ? 'Fine eliminazione' : 'Elimina ingredienti' }}
-  </button>
+  <div class="grid gap-4 md:grid-cols-2">
+    <div class="card-soft rounded-2xl p-5 shadow-lg">
+      <div class="flex items-center justify-between gap-2">
+        <label class="block text-sm font-semibold text-amber-900">Inserisci un ingrediente</label>
+        <span class="text-xs text-amber-700 pulse-badge">{{ ingredients.length }} in dispensa</span>
+      </div>
+      <input
+        type="text"
+        class="mt-2 w-full rounded-xl bg-white/80 border border-amber-100 px-3 py-2 text-amber-900 placeholder-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-300"
+        [(ngModel)]="userIngredient"
+        (keyup.enter)="addIngredient()"
+        placeholder="Es. pomodori, basilico, mozzarella..."
+      />
 
-  <ul class="mt-4 space-y-1">
-    <li
-      *ngFor="let ing of ingredients; let i = index"
-      class="flex items-center justify-between text-slate-300"
-      [class.shake]="deleteMode"
+      <div class="mt-3 flex flex-wrap items-center gap-2">
+        <button class="btn-amber px-4 py-2 text-sm font-semibold" (click)="addIngredient()">
+          ➕ Aggiungi ingrediente
+        </button>
+
+        <button
+          class="btn-outline px-4 py-2 text-sm font-semibold"
+          (click)="toggleDeleteMode()"
+        >
+          {{ deleteMode ? 'Fine eliminazione' : 'Elimina ingredienti' }}
+        </button>
+
+        <button
+          class="btn-outline px-4 py-2 text-sm font-semibold"
+          (click)="clearIngredients()"
+        >
+          🧹 Svuota dispensa
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-2">
+        <div
+          *ngFor="let ing of ingredients; let i = index"
+          class="flex items-center justify-between rounded-xl border border-amber-100 bg-white/95 px-3 py-2 shadow-sm recipe-hover"
+          [class.shake]="deleteMode"
+        >
+          <div class="flex items-center gap-2 text-amber-900">
+            <span class="pill-mint text-xs">{{ i + 1 }}</span>
+            <span class="font-medium">{{ ing }}</span>
+          </div>
+
+          <button
+            *ngIf="deleteMode"
+            class="ml-2 rounded-full bg-rose-100 px-2 py-1 text-xs text-rose-700 hover:bg-rose-200 transition"
+            (click)="removeIngredient(i)"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-contrast rounded-2xl p-5 shadow-lg">
+      <h2 class="text-sm font-semibold text-amber-900 mb-2">Anteprima richiesta per l’AI</h2>
+      <p class="text-sm text-amber-800 min-h-[64px] leading-relaxed">
+        {{ promptPreview }}
+      </p>
+
+      <div class="mt-4 grid grid-cols-2 gap-3 text-sm text-amber-800">
+        <div class="rounded-xl bg-white/80 border border-amber-100 p-3 shadow-sm">
+          <p class="text-xs text-amber-500">Ingredienti pronti</p>
+          <p class="text-lg font-semibold text-amber-900">{{ ingredients.length }}</p>
+        </div>
+        <div class="rounded-xl bg-white/80 border border-amber-100 p-3 shadow-sm">
+          <p class="text-xs text-amber-500">Ricette salvate</p>
+          <p class="text-lg font-semibold text-amber-900">{{ savedPreview.length }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap items-center gap-3">
+    <a
+      routerLink="/generate"
+      (click)="goToGenerate()"
+      class="btn-amber px-5 py-2 font-semibold inline-flex items-center gap-2"
     >
-      <span>• {{ ing }}</span>
-
-      <button
-        *ngIf="deleteMode"
-        class="ml-2 rounded-full bg-red-500/20 px-2 py-1 text-xs text-red-300 hover:bg-red-500/40 transition"
-        (click)="removeIngredient(i)"
-      >
-        ✕
-      </button>
-    </li>
-  </ul>
-  <div class="mt-6 rounded-lg border border-slate-700 bg-slate-900/60 p-4">
-    <h2 class="text-sm font-semibold text-slate-200 mb-2">Anteprima richiesta per l’AI</h2>
-    <p class="text-sm text-slate-300">
-      {{ promptPreview }}
+      <span>✨ Genera ricette</span>
+    </a>
+    <p class="text-sm text-amber-700">
+      Apri il generatore: scegli le porzioni, aggiusta le dosi e salva le ispirazioni.
     </p>
   </div>
 
-  <button
-    class="mt-4 rounded-lg bg-emerald-500 px-4 py-2 font-semibold text-slate-900 hover:bg-emerald-400 transition"
-    (click)="generateRecipes()"
-  >
-    Genera ricette (fake)
-  </button>
+  <div *ngIf="fakeResults.length" class="mt-4 grid gap-3">
+    <div
+      *ngFor="let r of fakeResults"
+      class="card-solid rounded-2xl p-4 text-amber-900 shadow-lg recipe-hover"
+    >
+      <div class="flex items-start justify-between gap-3">
+        <div>
+          <p class="text-xs uppercase tracking-wide text-amber-600">{{ r.difficulty }} · {{ r.time }}</p>
+          <h3 class="text-lg font-semibold">{{ r.title }}</h3>
+        </div>
+        <div class="flex gap-2 text-xs text-amber-800">
+          <span class="pill-mint">{{ r.tags[0] }}</span>
+          <span class="pill-berry">{{ r.tags[1] }}</span>
+        </div>
+      </div>
+      <p class="mt-2 text-sm text-amber-800 leading-relaxed">{{ r.summary }}</p>
 
-  <div class="mt-4 space-y-2">
-    <p *ngFor="let r of fakeResults" class="text-slate-200">• {{ r }}</p>
+      <div class="mt-3 flex flex-wrap gap-2 text-xs text-amber-900">
+        <span *ngFor="let ing of r.ingredients" class="pill bg-white/80">
+          {{ ing.quantity }} · {{ ing.name }}
+        </span>
+      </div>
+      <p class="mt-2 text-xs text-amber-700">Dosi per {{ r.servings }} persone</p>
+
+      <div class="mt-3 flex items-center gap-3">
+        <button
+          class="btn-green px-3 py-2 text-sm font-semibold"
+          (click)="viewRecipe(r)"
+        >
+          Salva in raccolta
+        </button>
+        <a routerLink="/generate" (click)="goToGenerate()" class="btn-cyan px-3 py-2 text-sm font-semibold">
+          Apri nel generatore →
+        </a>
+      </div>
+    </div>
   </div>
 
-  <a
-    routerLink="/generate"
-    (click)="goToGenerate()"
-    class="mt-4 inline-block rounded-lg bg-blue-500 px-4 py-2 font-semibold text-slate-900 hover:bg-blue-400 transition"
-  >
-    Vai al generatore completo →
-  </a>
+  <div *ngIf="savedPreview.length" class="mt-6 card-contrast rounded-2xl p-4 shadow-lg">
+    <div class="flex items-center justify-between">
+      <h2 class="text-sm font-semibold text-amber-900">Ultime ricette salvate</h2>
+      <a routerLink="/generate" (click)="goToGenerate()" class="text-sm text-amber-700 underline">
+        Gestisci tutto →
+      </a>
+    </div>
+
+    <div class="mt-3 grid gap-3 md:grid-cols-2">
+      <div *ngFor="let r of savedPreview" class="card-solid rounded-xl p-3 shadow-sm">
+        <p class="text-xs text-amber-600">{{ r.time }}</p>
+        <h3 class="font-semibold">{{ r.title }}</h3>
+        <p class="text-xs text-amber-700 leading-relaxed">{{ r.summary }}</p>
+      </div>
+    </div>
+  </div>
 </section>

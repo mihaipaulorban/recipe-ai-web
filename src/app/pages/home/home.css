@@ -1,19 +1,20 @@
-/*Animazione di tremolio per gli ingredienti da eliminare*/
-@keyframes shake {
+/* Animazione più morbida per il delete-mode */
+@keyframes soft-shake {
   0%,
   100% {
     transform: translateX(0);
   }
-  20%,
-  60% {
-    transform: translateX(-2px);
+  25% {
+    transform: translateX(-3px);
   }
-  40%,
-  80% {
-    transform: translateX(2px);
+  50% {
+    transform: translateX(3px);
+  }
+  75% {
+    transform: translateX(-2px);
   }
 }
 
 .shake {
-  animation: shake 0.3s linear infinite;
+  animation: soft-shake 0.9s ease-in-out infinite;
 }
